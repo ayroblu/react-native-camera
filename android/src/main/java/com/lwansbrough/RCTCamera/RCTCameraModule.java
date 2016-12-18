@@ -670,6 +670,15 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
                 camera.stopPreview();
                 camera.startPreview();
                 WritableMap response = new WritableNativeMap();
+
+                if (deviceOrientation == RCT_CAMERA_ORIENTATION_LANDSCAPE_LEFT ||
+                        deviceOrientation == RCT_CAMERA_ORIENTATION_LANDSCAPE_RIGHT) {
+                    response.putInt("width", camera.getParameters().getPictureSize().width);
+                    response.putInt("height", camera.getParameters().getPictureSize().height);
+                } else {
+                    response.putInt("width", camera.getParameters().getPictureSize().height);
+                    response.putInt("height", camera.getParameters().getPictureSize().width);
+                }
                 switch (options.getInt("target")) {
                     case RCT_CAMERA_CAPTURE_TARGET_MEMORY:
                         String encoded = Base64.encodeToString(data, Base64.DEFAULT);
