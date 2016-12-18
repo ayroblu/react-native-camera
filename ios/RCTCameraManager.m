@@ -628,7 +628,9 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
           CGImageDestinationFinalize(destination);
           CFRelease(destination);
 
-          [self saveImage:rotatedImageData target:target metadata:imageMetadata resolve:resolve reject:reject];
+          CGSize size = CGSizeMake(rotatedCGImage.size.width, rotatedCGImage.size.height);
+
+          [self saveImage:rotatedImageData target:target size:size metadata:imageMetadata resolve:resolve reject:reject];
 
           CGImageRelease(rotatedCGImage);
         }
@@ -641,11 +643,11 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
 }
 
 
-- (void)saveImage:(NSData*)imageData target:(NSInteger)target metadata:(NSDictionary *)metadata resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)saveImage:(NSData*)imageData target:(NSInteger)target size:(CGSize)size metadata:(NSDictionary *)metadata resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
   NSString *responseString;
 
   if (target == RCTCameraCaptureTargetMemory) {
-    resolve(@{@"data":[imageData base64EncodedStringWithOptions:0]});
+    resolve(@{@"data":[imageData base64EncodedStringWithOptions:0], @"width":@(size.width), @"height":@(size.height)});
     return;
   }
 
@@ -671,7 +673,7 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
   else if (target == RCTCameraCaptureTargetCameraRoll) {
     [[[ALAssetsLibrary alloc] init] writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL* url, NSError* error) {
       if (error == nil) {
-        resolve(@{@"path":[url absoluteString]});
+        resolve(@{@"path":[url absoluteString], @"width":@(size.width), @"height":@(size.height)});
       }
       else {
         reject(RCTErrorUnspecified, nil, RCTErrorWithMessage(error.description));
@@ -679,7 +681,7 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
     }];
     return;
   }
-  resolve(@{@"path":responseString});
+  resolve(@{@"path":responseString, @"width":@(size.width), @"height":@(size.height)});
 }
 
 - (CGImageRef)newCGImageRotatedByAngle:(CGImageRef)imgRef angle:(CGFloat)angle
