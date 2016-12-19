@@ -570,8 +570,9 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
           UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
       UIGraphicsEndImageContext();
 
+      CGSize actualSize = CGSizeMake(image.size.width, image.size.height);
       NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
-      [self saveImage:imageData target:target metadata:nil resolve:resolve reject:reject];
+      [self saveImage:imageData target:target size:actualSize metadata:nil resolve:resolve reject:reject];
 #else
       [[self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo] setVideoOrientation:orientation];
 
