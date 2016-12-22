@@ -629,7 +629,7 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
           CGImageDestinationFinalize(destination);
           CFRelease(destination);
 
-          CGSize size = CGSizeMake(rotatedCGImage.size.width, rotatedCGImage.size.height);
+          CGSize size = CGSizeMake(CGImageGetWidth(rotatedCGImage), CGImageGetHeight(rotatedCGImage));
 
           [self saveImage:rotatedImageData target:target size:size metadata:imageMetadata resolve:resolve reject:reject];
 

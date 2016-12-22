@@ -628,7 +628,7 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
         }
     }
 
-    private void captureWithOrientation(final ReadableMap options, final Promise promise, int deviceOrientation) {
+    private void captureWithOrientation(final ReadableMap options, final Promise promise, final int deviceOrientation) {
         Camera camera = RCTCamera.getInstance().acquireCameraInstance(options.getInt("type"));
         if (null == camera) {
             promise.reject("No camera found.");
